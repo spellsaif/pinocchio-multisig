@@ -1,0 +1,26 @@
+cargo-features = ["edition2024"]
+
+[package]
+name = "pinocchio-multisig"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+# [dependencies]
+# pinocchio = "0.8.1"
+# pinocchio-system = "0.2.0"
+# pinocchio-token = "0.3.0"
+# pinocchio-log = "0.4.0"
+# pinocchio-pubkey = "0.2.4"
+[dependencies]
+pinocchio = { git = "https://github.com/anza-xyz/pinocchio.git" }
+pinocchio-log = { git = "https://github.com/anza-xyz/pinocchio.git" }
+pinocchio-pubkey = { git = "https://github.com/anza-xyz/pinocchio.git" }
+pinocchio-system = { git = "https://github.com/anza-xyz/pinocchio.git" }
+shank = "0.4.2"
+
+[features]
+default = []
+std = []
