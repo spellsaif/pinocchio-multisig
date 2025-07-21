@@ -13,19 +13,33 @@ use pinocchio::{
 };
 use pinocchio_log::log;
 
-use crate::state::Multisig;
+use crate::state::{multisig_config, Multisig};
 
 pub fn process_init_multisig_instruction(accounts: &[AccountInfo], data: &[u8]) -> ProgramResult {
-    let [creator, multisig, _remaining @ ..] = accounts else {
+    let [creator, multisig,multisig_config,treasury, _remaining @ ..] = accounts else {
         return Err(ProgramError::NotEnoughAccountKeys)
     };
-
+    // Multisig PDA
     let bump = unsafe{ *(data.as_ptr() as *const u8) }.to_le_bytes();
     let seed = [(b"multisig"), creator.key().as_slice(), bump.as_ref()];
     let seeds = &seed[..];
 
-    let pda = pubkey::checked_create_program_address(seeds, &crate::ID).unwrap();
+    let pda = pubkey::checked_create_program_address(seeds, &crate::ID).unwrap(); //derive_address
     assert_eq!(&pda, multisig.key());
+
+    // Multisig_config PDA
+    let multisig_config_seed = [(b"multisig_config"), multisig.key().as_slice(), bump.as_ref()];
+    let multisig_config_seeds = &multisig_config_seed[..];
+    let pda_config = pubkey::checked_create_program_address(multisig_config_seeds, &crate::ID).unwrap(); //derive_address
+    assert_eq!(&pda_config, multisig_config.key());
+
+    // Treasury PDA
+    let treasury_seed = [(b"treasury"), multisig.key().as_slice(), bump.as_ref()];
+    let treasury_seeds = &treasury_seed[..];
+    let pda_treasury = pubkey::checked_create_program_address(treasury_seeds, &crate::ID).unwrap(); //derive_address
+    assert_eq!(&pda_treasury, treasury.key());
+
+
 
     if multisig.owner() != &crate::ID {
         log!("Creating Multisig Account");
