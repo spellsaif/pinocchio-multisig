@@ -25,13 +25,19 @@ pub fn process_instruction(
     program_id: &Pubkey,
     accounts: &[AccountInfo],
     data: &[u8],
+
 ) -> ProgramResult {
     assert_eq!(program_id, &ID);
+    
+
 
     let (discriminator, data) = data.split_first().ok_or(ProgramError::InvalidAccountData)?;
 
     match MultisigInstructions::try_from(discriminator)? {
         MultisigInstructions::InitMultisig => instructions::process_init_multisig_instruction(accounts, data)?,
+        //MultisigInstructions::UpdateMultisig => instructions::process_init_multisig_instruction(accounts, data)?,
+        //MultisigInstructions::CreateProposal => instructions::process_init_multisig_instruction(accounts, data)?,
+        //MultisigInstructions::Vote => instructions::process_init_multisig_instruction(accounts, data)?,
     }
 
     Ok(())

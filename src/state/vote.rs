@@ -4,22 +4,14 @@ use pinocchio::{
 };
 
 #[repr(C)]
-pub struct Multisig {
-    pub creator: Pubkey,
-    pub num_members: u8,
-    pub members: [Pubkey; 10], // Adjust size as needed
-    pub bump: u8, // Bump seed for PDA
-    pub treasury: Pubkey, // Treasury account for the multisig
-    pub treasury_bump: u8, // Bump seed for the treasury PDA
-    
-
-    //threshold
-    //treasury
-    //treasury_bump
+pub struct VoteState {
+    pub has_permission: bool, // Indicates if the account has permission to vote
+    pub vote_count: u64, // proposal counter
+    pub bump: u8, // Bump seed for PDA   
 }
 
-impl Multisig {
-    pub const LEN: usize = 32 + 1 + 32 * 10 + 1; // 32 bytes for creator, 1 byte for num_members, and 32 bytes for each member
+impl VoteState {
+    pub const LEN: usize = 1 + 8 + 1; // 1 byte for has_permission, 8 bytes for vote_count, and 1 byte for bump
 
     pub fn from_account_info_unchecked(account_info: &AccountInfo) -> &mut Self {
         unsafe { &mut *(account_info.borrow_mut_data_unchecked().as_ptr() as *mut Self) }
