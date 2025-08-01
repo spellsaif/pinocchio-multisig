@@ -2,6 +2,9 @@ pub mod init_multisig;
 
 pub use init_multisig::*;
 
+pub mod init_transaction;
+pub use init_transaction::*;
+
 use pinocchio::program_error::ProgramError;
 
 pub enum MultisigInstructions {
